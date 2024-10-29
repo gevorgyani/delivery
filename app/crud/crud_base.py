@@ -24,7 +24,7 @@ class CRUDBase:
             raise HTTPException(status_code=404, detail="Объект не найден")
         return db_obj
 
-    async def get_multi(
+    async def get_multi( #получить списком объекты данной модели
             self,
             session: AsyncSession
     ):

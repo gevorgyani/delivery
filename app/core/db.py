@@ -12,11 +12,11 @@ class PreBase:
     id = Column(Integer, primary_key=True)
 
 
-Base = declarative_base(cls=PreBase)
+Base = declarative_base(cls=PreBase) #базовый класс от которого будем наследоваться и создавать
 engine = create_async_engine(settings.DATABASE_URL, echo=False, future=True)
 AsyncSessionLocal = sessionmaker(engine, class_=AsyncSession, autocommit=False, autoflush=False, expire_on_commit=False)
 
 
-async def get_async_session():
+async def get_async_session(): #подкл к бд
     async with AsyncSessionLocal() as async_session:
         yield async_session

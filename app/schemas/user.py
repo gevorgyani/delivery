@@ -1,15 +1,11 @@
 import datetime
 from fastapi import HTTPException
-
 from pydantic import BaseModel, EmailStr, validator, constr
-
-
 from typing import Optional, List
-
 from pydantic import BaseModel
-
 from app.crud.crud_user import user_crud
-
+#from app.models.restaurant import Restaurant
+from app.models import Restaurant
 
 class Token(BaseModel):
     access_token: str
@@ -41,7 +37,7 @@ class UpdateUserForOrg(BaseModel):
     @validator("password")
     def validate_password(cls, value):
         # Ваша валидация пароля здесь
-        if not validate_password(value):
+        if not cls.validate_password(value):
             raise ValueError("Невалидный пароль. Убедитесь, что новый пароль соответствует требованиям.")
         return value
 
@@ -70,10 +66,6 @@ class CreateUserInDb(BaseModel):
     hashed_password: str
 
 
-
-
-
-
 class UpdatePassword(BaseModel):
     old_password: str
     new_password: str
@@ -81,7 +73,7 @@ class UpdatePassword(BaseModel):
     @validator("new_password")
     def validate_new_password(cls, value):
         # Ваша валидация пароля здесь
-        if not validate_password(value):
+        if not cls.validate_password(value):
             raise ValueError("Невалидный пароль. Убедитесь, что новый пароль соответствует требованиям.")
         return value
 
@@ -90,12 +82,13 @@ class PasswordGenerate(BaseModel):
     password: str
 
 
+
 class UpdatePasswordAdmin(BaseModel):
     new_password: str
 
     @validator("new_password")
     def validate_new_password(cls, value):
         # Ваша валидация пароля здесь
-        if not validate_password(value):
+        if not cls.validate_password(value):
             raise ValueError("Невалидный пароль. Убедитесь, что новый пароль соответствует требованиям.")
         return value

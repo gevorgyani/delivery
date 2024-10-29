@@ -7,14 +7,18 @@ from sqlalchemy import pool
 from alembic import context
 
 from app.core.config import settings
-from app.core.base import Base
+from app.core.base import Base #базовый класс от которого мы создаем все модели(на основе этих моделей можно создавать таблицы)
+
+#настройки того как у нас при запуске проекта с какими моделями мы будем работать
+#и как мы их будем обновлять, по какому пути мы будем работать с бд
+
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
 
 config.set_main_option('sqlalchemy.url', f'{settings.DATABASE_URL}?async_fallback=True')
-
+#алембик находит бд по пути
 load_dotenv('env')
 
 # Interpret the config file for Python logging.
@@ -27,7 +31,8 @@ if config.config_file_name is not None:
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
 
-target_metadata = Base.metadata
+#метаданные на основе которых будем создавать таблицы
+target_metadata = Base.metadata #здесь хранится инфа по всем таблицам
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
