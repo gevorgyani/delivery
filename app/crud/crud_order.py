@@ -15,8 +15,8 @@ class CRUDOrder(CRUDBase):
         return result.scalars().all()
 
     @staticmethod
-    async def create_order(db: AsyncSession, order: OrderCreate):
-        db_order = Dish(**order.dict())
+    async def create_order(db: AsyncSession, order: OrderCreate, user_id: int):
+        db_order = Dish(**order.dict(), user_id=user_id)
         db.add(db_order)
         await db.commit()  # подтверждение операции
         return db_order

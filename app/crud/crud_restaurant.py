@@ -8,7 +8,8 @@ from app.models.restaurant import Restaurant
 class CRUDRestaurant(CRUDBase):
     @staticmethod
     async def get_restaurants_in_db(db: AsyncSession, limit: int, offset: int):
-        query = select(Restaurant).where(Restaurant.is_deleted == False).limit(limit).offset(offset).order_by(Restaurant.id)
+        query = select(Restaurant).where(Restaurant.is_deleted == False).limit(limit).offset(offset).order_by(
+            Restaurant.id)
         result = await db.execute(query)
         return result.scalars().all()
 

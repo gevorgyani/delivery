@@ -10,8 +10,8 @@ async def get_order(db: AsyncSession, order_id: int):
     return await order_crud.get_order(db, order_id)
 
 
-async def create_order(db: AsyncSession, order_id: int, order: OrderCreate):
-    return await order_crud.create_order(db, order_id, order)
+async def create_order(db: AsyncSession, order: OrderCreate, user_id: int):
+    return await order_crud.create_order(db, order, user_id)
 
 
 async def update_order(db: AsyncSession, order_id: int, order_update: OrderUpdate):

@@ -2,14 +2,13 @@ from typing import List
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.models import restaurant
-from app.schemas.restaurants import RestaurantsInDB, RestaurantsCreate, RestaurantsUpdate
+from app.schemas.restaurants import RestaurantsInDB, RestaurantsCreate, RestaurantsUpdate, RestaurantsBase
 from app.core.db import get_async_session
 from app.services import restaurants_service
-from app.crud import crud_restaurant
 router = APIRouter()
 
 
-@router.get("/restaurants/", response_model=List[RestaurantsInDB])
+@router.get("/", response_model=List[RestaurantsBase])
 async def get_restaurants(
         limit: int = Query(10, le=30),  #по умолчанию 10 максимум 30
         offset: int = Query(0),
@@ -18,22 +17,22 @@ async def get_restaurants(
     return restaurants
 
 
-@router.post("/", response_model=RestaurantsInDB)
+@router.post("/", response_model=RestaurantsBase)
 async def create_restaurants_endpoint(restaurants: RestaurantsCreate, db: AsyncSession = Depends(get_async_session)):
-    return await restaurants_service.create_restaurant_service(db, restaurants)
+    return await restaurants_service.create_restaurant_service(session=db, obj_in=restaurants)
 
 
-@router.get("/{restaurant_id}/", response_model=RestaurantsInDB)
+@router.get("/{restaurant_id}/", response_model=RestaurantsBase)
 async def search_by_id(restaurant_id: int, db: AsyncSession = Depends(get_async_session)):
-    restaurant = await crud_restaurant.get_restaurant_by_id(db, restaurant_id)
-    if not restaurant:
+    restaurant_result = await restaurants_service.get_restaurant_by_id(db, restaurant_id)
+    if not restaurant_result:
         raise HTTPException(status_code=404, detail="Restaurant not found")
-    return restaurant
+    return restaurant_result
 
 
-@router.put("/{restaurant_id}", response_model=RestaurantsInDB)
-async def update_restaurant_endpoint(restaurant_id: int, restaurant: RestaurantsUpdate, db: AsyncSession = Depends(get_async_session)):
-    db_restaurant = await restaurants_service.update_restaurant_service(db, restaurant_id, restaurant)
+@router.put("/{restaurant_id}", response_model=RestaurantsBase)
+async def update_restaurant_endpoint(restaurant_id: int, restaurant_data: RestaurantsUpdate, db: AsyncSession = Depends(get_async_session)):
+    db_restaurant = await restaurants_service.update_restaurant_service(db, restaurant_id, restaurant_data)
     if not db_restaurant:
         raise HTTPException(status_code=404, detail="Restaurant not found")
     return db_restaurant

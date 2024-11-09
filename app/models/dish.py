@@ -8,5 +8,3 @@ class Dish(Base):
     name = Column(String, nullable=False)
     description = Column(String, nullable=True)
     price = Column(Float, nullable=False)
-    #многие к одному
-    restaurant = relationship('Restaurant', back_populates='dish') #в Restaurant указывает на связь с полем restaurant в Dish

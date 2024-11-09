@@ -9,4 +9,3 @@ class Review(Base):
     restaurant_id = Column(Integer, ForeignKey('restaurant.id'), nullable=False)
     rating = Column(Integer, nullable=False)
     comment = Column(String, nullable=True)
-    restaurant = relationship('Restaurant', back_populates='review')

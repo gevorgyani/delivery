@@ -8,7 +8,4 @@ class Restaurant(Base):
     name = Column(String, nullable=False)
     description = Column(String, nullable=True)
     location = Column(String, nullable=False)
-    #один ко многим
-    dishes = relationship('Dish', back_populates='restaurant')
-    orders = relationship('Order', back_populates='restaurant')
-    reviews = relationship('Review', back_populates='restaurant')
+    is_deleted = Column(Boolean, default=False, nullable=False)

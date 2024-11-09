@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime
 from fastapi import HTTPException
 from pydantic import BaseModel, EmailStr, validator, constr, Field
 from typing import Optional, List
@@ -9,15 +9,18 @@ from app.crud.crud_user import user_crud
 #описание схем данных, которые используются для передачи данных через апи
 class RestaurantsBase(BaseModel):
     name: str
-    description: str
+    description: Optional[str] = None
     location: str
+
+    class Config:
+        orm_mode = True
 
 
 class RestaurantsCreate(RestaurantsBase):
     pass
 
 
-class RestaurantsUpdate(BaseModel):
+class RestaurantsUpdate(RestaurantsBase):
     # нам позволяет описывать схемы , которые мы потом будем применять к эндпоинтам
     # указываем названия полей, которые будем принимать при создании ресторана
     # этот класс используем в качестве схемы, чтобы мы потом могли работать с

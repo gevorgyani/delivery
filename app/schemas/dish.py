@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime
 from typing import Optional, List
 from pydantic import BaseModel
 
@@ -14,7 +14,7 @@ class DishCreate(DishBase):
     pass
 
 
-class DishUpdate(BaseModel):
+class DishUpdate(DishBase):
     # нам позволяет описывать схемы , которые мы потом будем применять к эндпоинтам
     # указываем названия полей, которые будем принимать при создании ресторана
     # этот класс используем в качестве схемы, чтобы мы потом могли работать с
@@ -26,10 +26,16 @@ class DishUpdate(BaseModel):
 
 class DishInDB(DishBase):
     # класс, который отвечает за сохранение данных в бд, указываем в каком формате хотим сохранить инфу в бд
-    id: int
+    restaurant_id: int
     created_at: datetime
     updated_at: datetime
     is_deleted: bool = False
+
+
+
+class DishOut(DishBase):
+    id: int
+    restaurant_id: int
 
     class Config:
         orm_mode = True
