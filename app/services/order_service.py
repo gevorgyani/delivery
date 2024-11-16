@@ -14,13 +14,14 @@ async def create_order(db: AsyncSession, order: OrderCreate, user_id: int):
     return await order_crud.create_order(db, order, user_id)
 
 
-async def update_order(db: AsyncSession, order_id: int, order_update: OrderUpdate):
+async def update_order(db: AsyncSession, order_id: int, status: OrderUpdate):
     db_order = await order_crud.get_order(db, order_id)
+    print(db_order)
     if not db_order:
         return None
-    orders_update = order_update.dict(
-        exclude_unset=True)
-    return await order_crud.update_order(db, db_order, orders_update)
+    #print("Обновление заказа с:", orders_update)
+    #print("Текущий db_order:", db_order)
+    return await order_crud.update(db_obj=db_order, obj_in=status, session=db)
 
 
 async def delete_order(db: AsyncSession, order_id: int):

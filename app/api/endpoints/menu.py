@@ -2,6 +2,8 @@ from typing import List
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.db import get_async_session
+from app.core.security import get_current_admin
+from app.models import User
 from app.schemas import dish
 from app.schemas.dish import DishInDB, DishCreate, DishUpdate, DishBase, DishOut
 from app.services import dish_service
@@ -18,14 +20,20 @@ async def get_menu(restaurant_id: int, db: AsyncSession = Depends(get_async_sess
 
 
 @router.post("/restaurants/{restaurant_id}/menu/", response_model=DishOut)
-async def create_dish(restaurant_id: int, dish: DishCreate, db: AsyncSession = Depends(get_async_session)):
+async def create_dish(restaurant_id: int,
+                      dish: DishCreate,
+                      db: AsyncSession = Depends(get_async_session),
+                      current_admin: User = Depends(get_current_admin)):
     created_dish = await dish_service.create_dish(db, restaurant_id=restaurant_id, dish_id=dish)
     return created_dish
 
 
 @router.put("/restaurants/{restaurant_id}/menu/{dish_id}/", response_model=DishOut)
-async def update_dish(restaurant_id: int, dish_id: int, dish: DishUpdate,
-                      db: AsyncSession = Depends(get_async_session)):
+async def update_dish(restaurant_id: int,
+                      dish_id: int,
+                      dish: DishUpdate,
+                      db: AsyncSession = Depends(get_async_session),
+                      current_admin: User = Depends(get_current_admin)):
     updated_dish = await dish_service.update_dish(db, restaurant_id, dish_id, dish)
     if updated_dish is None:
         raise HTTPException(status_code=404, detail="Dish not found")
@@ -33,7 +41,10 @@ async def update_dish(restaurant_id: int, dish_id: int, dish: DishUpdate,
 
 
 @router.delete("/restaurants/{restaurant_id}/menu/{dish_id}/", response_model=dict)
-async def delete_dish(restaurant_id: int, dish_id: int, db: AsyncSession = Depends(get_async_session)):
+async def delete_dish(restaurant_id: int,
+                      dish_id: int,
+                      db: AsyncSession = Depends(get_async_session),
+                      current_admin: User = Depends(get_current_admin)):
     result = await dish_service.delete_dish(db, restaurant_id, dish_id)
     if not result:
         raise HTTPException(status_code=404, detail="Dish not found")
