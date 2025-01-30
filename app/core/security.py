@@ -60,7 +60,6 @@ def verify_token(token: str) -> TokenData:
     return TokenData(email=user_email)
 
 
-#ИЗУЧИТЬ ЭТУ ЧАСТЬ !!!!
 async def get_current_user(
         token: str = Depends(oauth2_scheme),
         db: AsyncSession = Depends(get_async_session),
